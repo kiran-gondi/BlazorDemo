@@ -1,6 +1,18 @@
 ﻿@page "/learnBlazor/BindProp"
-<h3>BindProp</h3>
+
+<PageTitle>Product - One Way Data Binding</PageTitle>
+
+<h3>Product - One Way Data Binding</h3>
+
+Name: @product.Name <br/>
+Active: @product.IsActive
+
 
 @code {
-
+    Models.Product product = new ()
+    {
+        Id = 1,
+        Name = "Product 1",
+        IsActive = true
+    };
 }
