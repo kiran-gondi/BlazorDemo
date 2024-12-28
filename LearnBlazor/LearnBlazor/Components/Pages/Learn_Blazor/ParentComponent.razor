@@ -1,0 +1,33 @@
+﻿@page "/learnBlazor/parentComponent"
+
+<h3>ParentComponent</h3>
+
+<CascadingValue Value="@MessageForGrandChildTemp" Name="Message">
+    <CascadingValue Value="@LuckNumber" Name="LuckyNumber">
+        <_ChildComponent OnButtonClick="ShowMessage" Title="This title is passed as paramter from Parent Component">
+            <ChildSomeContent> Some Text between the Tags from Parent Component!</ChildSomeContent>
+            <ChildContent>
+                <p>Some Other Text between the Tags from Parent Component!</p>
+                <br/>
+                <p class="text-primary">Some Other TEXT</p>
+            </ChildContent>
+        </_ChildComponent>
+    </CascadingValue>
+</CascadingValue>
+<p>@messageText</p>
+
+@* <_ChildComponent Title="This title is passed as paramter from Parent Component">
+</_ChildComponent> *@
+
+
+@code {
+    public string MessageForGrandChildTemp = "This message is passed from Parent Component to the Grand Child";
+    public string LuckNumber = "7";
+
+    public string messageText = "";
+
+    private void ShowMessage()
+    {
+        messageText = "Button inside child component was clicked";
+    }
+}
