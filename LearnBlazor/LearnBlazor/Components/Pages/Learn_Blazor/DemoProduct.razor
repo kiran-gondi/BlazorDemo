@@ -3,41 +3,25 @@
 <PageTitle>Demo Product</PageTitle>
 
 <h2 class="border p-2 mt-2 bg-secondary">Demo Product</h2>
-
+<p>Favorite Count: @FavoriteCount</p>
+<p>Selected Product: @SelectedProduct</p>
 <div class="p-2 mt-2">
     <div class="row">
         @foreach (var product in Products)
         {
-            <div class="bg-light border col-6">
-                <h4 class="text-secondary">Product - @product.Id</h4>
-                Name: @product.Name 
-                <br />
-                Show Properties: <input type="checkbox" @bind="@product.IsActive"/>
+            <_ProductComponent Product="@product" OnFavoriteUpdated="FavouriteCountChange"
+                               OnUpdateSelectedProduct="UpdateSelectedProduct">
 
-                @if (@product.IsActive)
-                {
-                    foreach (var productPropertiesItem in product.ProductProperties)
-                    {
-                        <p>@productPropertiesItem.Key - @productPropertiesItem.Value</p>
-                    }
-                }
-                <br />
-                <input type="button" class="btn btn-danger" style="width: 100px" value="Delete" 
-                @onclick="()=> RemoveProduct(product.Id)"/>
-            </div>
+            </_ProductComponent>
         }
-    </div>
-
-    <div class="row pt-4">
-        <input type="button" class="btn btn-success" style="width: 100px" value="Counter" 
-        @onclick="() => IncrementCount(5)"/>
-        Counter: @Count
     </div>
 
 </div>
 
 @code {
     public int Count { get; set; } = 0;
+    public int FavoriteCount { get; set; } = 0;
+    public string SelectedProduct { get; set; } = string.Empty;
 
     List<Product> Products = new();
 
@@ -73,15 +57,21 @@
 
     }
 
-    private void IncrementCount(int counter)
+    protected void FavouriteCountChange(bool isSelected)
     {
-        Count += counter;
+        if(isSelected)
+        {
+            FavoriteCount++;
+        }
+        else
+        {
+            FavoriteCount--;
+        }
     }
 
-    private void RemoveProduct(int productId)
+    protected void UpdateSelectedProduct(string productName)
     {
-        var prod = Products.FirstOrDefault(x => x.Id == productId);
-        if(prod != null)
-            Products.Remove(prod);
+        SelectedProduct = productName;
     }
+    
 }
