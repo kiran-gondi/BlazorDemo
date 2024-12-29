@@ -1,0 +1,53 @@
+﻿@page "/learnrouting"
+@* @page "/learnrouting/{Param:int}/{Param1}"
+@page "/learnrouting/{Param:int}" *@
+@* @page "/learnrouting/{Param}/{Param1}"
+@page "/learnrouting/{Param}" *@
+@page "/learnBlazor/learnrouting"
+@page "/learnrouting/catch-all/{*PageParameter}"
+
+@inject NavigationManager _NavigationManager
+
+<h3>LearnRouting</h3>
+
+<p>Param1: @Param</p>
+<p>Param2: @Param1</p>
+<p>Page Parameteres: @PageParameter</p>
+
+@* <a href="learnrouting?Param=Learn&Param1=Blazor" class="btn btn-primary">Navigate to query paramter</a> *@
+<button @onclick="NavigateToQueryParam" class="btn btn-primary">NavigateToQuery Param</button>
+<button class="btn btn-success" @onclick="LoadParameters">Load Parameters</button>
+<br />
+
+
+<div class="bg-info" style="height:1000px"></div>
+
+<h2 id="targetElement">Main title</h2>
+
+@code {
+    //[Parameter]
+    [SupplyParameterFromQuery(Name ="Param")]
+    public string Param { get; set; }
+    // public int Param { get; set; }
+
+    // [Parameter]
+    [SupplyParameterFromQuery(Name = "Param1")]
+    public string Param1 { get; set; } = "";
+
+    [Parameter]
+    public string PageParameter { get; set; } = "";
+
+    private void LoadParameters()
+    {
+        var uri = new Uri(_NavigationManager.Uri);
+        var query = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query);
+        Param = query["Param"];
+        Param1 = query["Param1"];
+        //_NavigationManager.Refresh(forceReload: true);
+    }
+
+    private void NavigateToQueryParam()
+    {
+        _NavigationManager.NavigateTo("learnrouting?Param=Learn&Param1=Blazor");
+    }
+}
