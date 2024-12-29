@@ -1,0 +1,20 @@
+﻿@page "/countercomp"
+@attribute [StreamRendering]
+
+<h3>CounterComponent</h3>
+
+<p>Counter: @Counter</p>
+
+@code {
+    private int Counter { get; set; } = 10;
+
+    protected override async Task OnInitializedAsync()
+    {
+        for (int i = 10; i > 0; i--)
+        {
+            await Task.Delay(1000);
+            Counter--;
+            StateHasChanged();
+        }
+    }
+}
