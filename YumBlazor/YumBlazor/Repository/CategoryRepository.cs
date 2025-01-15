@@ -7,36 +7,37 @@ namespace YumBlazor.Repository
     public class CategoryRepository : ICategoryRepository
     {
         private readonly ApplicationDbContext _applicationDbContext;
+
         public CategoryRepository(ApplicationDbContext applicationDbContext)
         {
             _applicationDbContext = applicationDbContext;
         }
 
-        public async Task<Category> Create(Category category)
+        public async Task<Category> CreateAsync(Category category)
         {
             if (category == null)
             {
                 throw new ArgumentNullException(nameof(category));
             }
 
-            _applicationDbContext.Add(category);
+            await _applicationDbContext.AddAsync(category);
             await _applicationDbContext.SaveChangesAsync();
             return category;
         }
 
-        public async Task<bool> Delete(int categoryId)
+        public async Task<bool> DeleteAsync(int categoryId)
         {
             bool isDeleted = false;
-            var categoryToDelete = _applicationDbContext.Category.FirstOrDefault(c => c.Id == categoryId);
+            var categoryToDelete = await _applicationDbContext.Category.FirstOrDefaultAsync(c => c.Id == categoryId);
             if (categoryToDelete != null)
             {
                 _applicationDbContext.Remove(categoryToDelete);
-                isDeleted = await _applicationDbContext.SaveChangesAsync() > 0;
+                isDeleted = (await _applicationDbContext.SaveChangesAsync()) > 0;
             }
             return isDeleted;
         }
 
-        public async Task<Category> Get(int categoryId)
+        public async Task<Category> GetAsync(int categoryId)
         {
             Category category = await _applicationDbContext.Category.FirstOrDefaultAsync(x => x.Id == categoryId);
             if(category == null)
@@ -46,16 +47,16 @@ namespace YumBlazor.Repository
             return category;
         }
 
-        public async Task<IEnumerable<Category>> GetAll()
+        public async Task<IEnumerable<Category>> GetAllAsync()
         {
             return await _applicationDbContext.Category.ToListAsync();
         }
 
-        public async Task<Category> Update(Category categoryToUpdate)
+        public async Task<Category> UpdateAsync(Category categoryToUpdate)
         {
             Category existingCategory = await _applicationDbContext.Category.FirstOrDefaultAsync(x => x.Id == categoryToUpdate.Id);
             
-            if (existingCategory != null)
+            if (existingCategory is not null)
             {
                 existingCategory.Name = categoryToUpdate.Name;
                 _applicationDbContext.Category.Update(existingCategory);
