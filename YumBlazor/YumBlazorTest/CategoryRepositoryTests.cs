@@ -38,7 +38,7 @@ namespace YumBlazorTest
 
             await Assert.ThrowsAsync<ArgumentNullException>(async () => 
             {
-                await _categoryRepository.Create(category);
+                await _categoryRepository.CreateAsync(category);
             });
         }
 
@@ -49,9 +49,9 @@ namespace YumBlazorTest
                                             .With(x=>x.Id, TestCategoryId)
                                             .Create();
 
-            await _categoryRepository.Create(categoryToAdd);
+            await _categoryRepository.CreateAsync(categoryToAdd);
 
-            Category categoryAdded = await _categoryRepository.Get(categoryToAdd.Id);
+            Category categoryAdded = await _categoryRepository.GetAsync(categoryToAdd.Id);
 
             categoryAdded.Id.Should().Be(TestCategoryId);
             categoryAdded.Name.Should().Be(categoryToAdd.Name);
@@ -66,9 +66,9 @@ namespace YumBlazorTest
                                             .With(x => x.Id, TestCategoryId)
                                             .Create();
 
-            await _categoryRepository.Create(categoryToAdd);
+            await _categoryRepository.CreateAsync(categoryToAdd);
 
-            bool isDeleted = await _categoryRepository.Delete(categoryToAdd.Id);
+            bool isDeleted = await _categoryRepository.DeleteAsync(categoryToAdd.Id);
 
             isDeleted.Should().BeFalse();
         }
@@ -76,7 +76,7 @@ namespace YumBlazorTest
         [Fact]
         public async Task CategoryDelete_InValid()
         {
-            bool isDeleted = await _categoryRepository.Delete(TestCategoryId);
+            bool isDeleted = await _categoryRepository.DeleteAsync(TestCategoryId);
             isDeleted.Should().BeFalse();
         }
 
@@ -87,9 +87,9 @@ namespace YumBlazorTest
                                             .With(x => x.Id, TestCategoryId)
                                             .Create();
 
-            await _categoryRepository.Create(categoryToAdd);
+            await _categoryRepository.CreateAsync(categoryToAdd);
 
-            Category categoryExists = await _categoryRepository.Get(categoryToAdd.Id);
+            Category categoryExists = await _categoryRepository.GetAsync(categoryToAdd.Id);
 
             categoryExists.Should().NotBeNull();
             categoryExists.Id.Should().Be(TestCategoryId);
@@ -103,9 +103,9 @@ namespace YumBlazorTest
                                             .With(x => x.Id, TestCategoryId)
                                             .Create();
 
-            await _categoryRepository.Create(categoryToAdd);
+            await _categoryRepository.CreateAsync(categoryToAdd);
 
-            Category categoryExists = await _categoryRepository.Get(123);
+            Category categoryExists = await _categoryRepository.GetAsync(123);
 
             categoryExists.Should().NotBeNull();
             categoryExists.Id.Should().Be(0);
@@ -119,9 +119,9 @@ namespace YumBlazorTest
                                             .With(x => x.Id, TestCategoryId)
                                             .Create();
 
-            await _categoryRepository.Create(categoryToAdd);
+            await _categoryRepository.CreateAsync(categoryToAdd);
 
-            IEnumerable<Category> categoryExists = await _categoryRepository.GetAll();
+            IEnumerable<Category> categoryExists = await _categoryRepository.GetAllAsync();
 
             categoryExists.Should().NotBeNull();
             categoryExists.Count().Should().Be(1);
@@ -130,7 +130,7 @@ namespace YumBlazorTest
         [Fact]
         public async Task CategoryGetAll_InValid()
         {
-            IEnumerable<Category> categoryExists = await _categoryRepository.GetAll();
+            IEnumerable<Category> categoryExists = await _categoryRepository.GetAllAsync();
 
             categoryExists.Should().BeEmpty();
             categoryExists.Count().Should().Be(0);
@@ -165,9 +165,9 @@ namespace YumBlazorTest
                                            .With(x => x.Id, TestCategoryId)
                                            .Create();
 
-            await _categoryRepository.Create(categoryToAdd);
+            await _categoryRepository.CreateAsync(categoryToAdd);
 
-            Category categoryExists = await _categoryRepository.Get(categoryToAdd.Id);
+            Category categoryExists = await _categoryRepository.GetAsync(categoryToAdd.Id);
 
             categoryExists.Should().NotBeNull();
             categoryExists.Id.Should().Be(TestCategoryId);
@@ -175,7 +175,7 @@ namespace YumBlazorTest
 
             categoryExists.Id = 22;
             categoryExists.Name = "Test update";
-            Category updatedCategory = await _categoryRepository.Update(categoryExists);
+            Category updatedCategory = await _categoryRepository.UpdateAsync(categoryExists);
 
             updatedCategory.Should().NotBeNull();
             updatedCategory.Id.Should().Be(categoryExists.Id);
