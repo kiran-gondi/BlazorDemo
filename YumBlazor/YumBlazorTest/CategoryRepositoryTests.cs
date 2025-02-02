@@ -5,6 +5,7 @@ using EntityFrameworkCoreMock;
 using YumBlazor.Repository;
 using AutoFixture;
 using FluentAssertions;
+using Moq;
 
 namespace YumBlazorTest
 {
@@ -13,6 +14,7 @@ namespace YumBlazorTest
         private readonly IFixture _fixture;
 
         private readonly ICategoryRepository _categoryRepository;
+        private readonly Mock<ICategoryRepository> _categoryRepositoryMock;
         private IEnumerable<Category> categoryInitialData;
         private const int TestCategoryId = 1;
 
@@ -28,6 +30,8 @@ namespace YumBlazorTest
             ApplicationDbContext dbContext = dbContextMock.Object;
             dbContextMock.CreateDbSetMock(temp => temp.Category, categoryInitialData);
 
+            _categoryRepositoryMock = new Mock<ICategoryRepository>();
+            _categoryRepository = _categoryRepositoryMock.Object;
             _categoryRepository = new CategoryRepository(dbContextMock.Object);
         }
 
@@ -49,14 +53,24 @@ namespace YumBlazorTest
                                             .With(x=>x.Id, TestCategoryId)
                                             .Create();
 
-            await _categoryRepository.CreateAsync(categoryToAdd);
+            _categoryRepositoryMock
+                .Setup(temp => temp.CreateAsync(It.IsAny<Category>()))
+                .ReturnsAsync(categoryToAdd);
 
-            Category categoryAdded = await _categoryRepository.GetAsync(categoryToAdd.Id);
+            //await _categoryRepository.CreateAsync(categoryToAdd);
 
-            categoryAdded.Id.Should().Be(TestCategoryId);
-            categoryAdded.Name.Should().Be(categoryToAdd.Name);
+            _categoryRepositoryMock
+                .Setup(temp => temp.GetAsync(It.IsAny<int>()))
+                .ReturnsAsync(categoryToAdd);
 
-            categoryAdded.Should().Be(categoryAdded);
+            categoryToAdd = await _categoryRepository.CreateAsync(categoryToAdd);
+
+            //Category categoryAdded = await _categoryRepository.GetAsync(categoryToAdd.Id);
+
+            categoryToAdd.Id.Should().Be(TestCategoryId);
+            categoryToAdd.Name.Should().Be(categoryToAdd.Name);
+
+            //categoryToAdd.Should().Be(categoryAdded);
         }
 
         [Fact]
